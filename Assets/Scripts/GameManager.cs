@@ -7,6 +7,12 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
+    public int stage;           
+    public Animator stageAnim;
+    public Animator clearAnim;
+    public Animator fadeAnim;
+    public Transform playerPos;
+
     public string[] enemyObjs;
     public Transform[] spawnPoints;
 
@@ -31,7 +37,40 @@ public class GameManager : MonoBehaviour
     {
         spawnList = new List<Spawn>();
         enemyObjs = new string[] { "EnemyL", "EnemyM", "EnemyS", "EnemyB" };
+        StageStart();
+    }
+
+    public void StageStart()
+    {
+        // Stage UI Load
+        stageAnim.SetTrigger("On");
+        stageAnim.GetComponent<Text>().text = "Stage " + stage + "\nStart";
+        clearAnim.GetComponent<Text>().text = "Stage " + stage + "\nClear";
+
+        // Enemy Spawn File Read
         ReadSpawnFile();
+
+        // Fade In
+        fadeAnim.SetTrigger("In");
+    }
+
+    public void StageEnd()
+    {
+        // Clear UI Load
+        clearAnim.SetTrigger("On");
+
+        // Fade Out
+        fadeAnim.SetTrigger("Out");
+
+        // Player Repos
+        playerPos.transform.position = playerPos.position;
+
+        // Stage Number Increament
+        stage++;
+        if (stage > 2)
+            Invoke("GameOver", 6f);
+        else
+            Invoke("StageStart", 4f);
     }
 
     void ReadSpawnFile()
@@ -42,7 +81,7 @@ public class GameManager : MonoBehaviour
         spawnEnd = false;
 
         // 리스폰 파일 읽기
-        TextAsset textFile = Resources.Load("Stage0") as TextAsset;
+        TextAsset textFile = Resources.Load("Stage" + stage) as TextAsset;
         StringReader stringReader = new StringReader(textFile.text);
 
         while (stringReader != null)
@@ -188,11 +227,12 @@ public class GameManager : MonoBehaviour
 
     public void ExplosionAnim(Vector3 expPos, string type)
     {
+        // 플레이어와 적 로직에서 모두 호출하는 함수
         GameObject explosion = objectManager.MakeObj("Explosion");
         Explosion explosionLogic = explosion.GetComponent<Explosion>();
 
-        explosion.transform.position = expPos;
-        explosionLogic.StartExplosion(type);
+        explosion.transform.position = expPos;      // 폭발 위치
+        explosionLogic.StartExplosion(type);        // 폭발로직에 타입에 따라서 폭발하는 함수 호출
     }
 
     public void GameOver()

@@ -74,7 +74,7 @@ public class ObjectManager : MonoBehaviour
         explosion = new GameObject[20];
     }
 
-    void Generate()
+    void Generate()         // 풀로 관리하는 모든 오브젝트 Generate
     {
         EnemyGenerate();
         ItemGenerate();

@@ -57,24 +57,24 @@ public class Player : MonoBehaviour
     {
         isRespawnTime = !isRespawnTime;
         if (isRespawnTime)
-            spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+            spriteRenderer.color = new Color(1, 1, 1, 0.5f);    // 무적타임
         else
-            spriteRenderer.color = new Color(1, 1, 1, 1);
+            spriteRenderer.color = new Color(1, 1, 1, 1);       // 무적타임이 풀린 후
     }
 
     void Update()
     {
-        Move();
-        Fire();
-        Boom();
-        Reload();
+        Move();     // 플레이어 움직임
+        Fire();     // 플레이어 발사
+        Boom();     // 플레이어 필살기
+        Reload();   // 플레이어 발사 딜레이
     }
 
     public void JoyPanel(int type)
     {
         for (int idx = 0; idx < 9; idx++)
         {
-            joyControl[idx] = idx == type;
+            joyControl[idx] = idx == type;  // Pannel 인덱스랑 type과 같으면 joycontrol 배열에 넣어줌
         }
     }
 
@@ -88,17 +88,17 @@ public class Player : MonoBehaviour
         isControl = false;
     }
 
-    public void ButtonADown()
+    public void ButtonADown()   // Generation Attack Button Down
     {
         isButtonA = true;
     }
 
-    public void ButtonAUp()
+    public void ButtonAUp()     // Generation Attack Button Up
     {
         isButtonA = false;
     }
 
-    public void ButtonBDown()
+    public void ButtonBDown()   // Special Attack Button Down
     {
         isButtonB = true;
     }
@@ -174,7 +174,7 @@ public class Player : MonoBehaviour
 
         if (!isButtonB)
             return;
-    
+
         if (isBoomTime)
             return;
 
@@ -222,8 +222,8 @@ public class Player : MonoBehaviour
             if (isHit)
                 return;
 
-            gameManager.LifeDiminished();
-            gameManager.ExplosionAnim(transform.position, "P");
+            gameManager.LifeDiminished();                       // 플레이어 라이프 감소
+            gameManager.ExplosionAnim(transform.position, "P"); // 플레이어 폭발 애니매이션 실행
 
             if (life == 0)
                 gameManager.GameOver();
@@ -287,8 +287,10 @@ public class Player : MonoBehaviour
 
     void OffBoomEffect()
     {
+        Debug.Log("필살기 이펙트 꺼짐");
         boomEffect.SetActive(false);
         isBoomTime = false;
+        isButtonB = false;
     }
 
     void HitBoomEnemy()
