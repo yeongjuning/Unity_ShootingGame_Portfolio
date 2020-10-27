@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
         switch (enemyName)
         {
             case "B":
-                health = 200;
+                health = 2500;
                 Invoke("BossAppearance", 2);
                 break;
             case "L":

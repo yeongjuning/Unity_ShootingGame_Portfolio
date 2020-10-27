@@ -41,6 +41,10 @@ public class Player : MonoBehaviour
 
     Animator anim;
     SpriteRenderer spriteRenderer;
+
+    private float h;
+    private float v;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -103,12 +107,20 @@ public class Player : MonoBehaviour
         isButtonB = true;
     }
 
-    void Move()
+    void KeyboardMoveValue()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
 
-        // Joy Control Value
+        if ((isTouchRight && h == 1) || (isTouchLeft && h == -1))
+            h = 0;
+
+        if ((isTouchTop && v == 1) || (isTouchBottom && v == -1))
+            v = 0;
+    }
+
+    void JoyPadMoveValue()
+    {
         if (joyControl[0]) { h = -1; v = 1; }   // Left Top
         if (joyControl[1]) { h = 0; v = 1; }    // Center Top
         if (joyControl[2]) { h = 1; v = 1; }    // Right Top
@@ -124,6 +136,14 @@ public class Player : MonoBehaviour
 
         if ((isTouchTop && v == 1) || (isTouchBottom && v == -1) || !isControl)
             v = 0;
+    }
+
+    void Move()
+    {
+        if (!isControl)
+            KeyboardMoveValue();    // Keyboard Control Value
+        else
+            JoyPadMoveValue();      // Joy Control Value
 
         Vector3 currentPos = transform.position;
         Vector3 nextPos = new Vector3(h, v, 0) * speed * Time.deltaTime;
